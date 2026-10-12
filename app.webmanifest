@@ -1,0 +1,31 @@
+{
+  "id": "./",
+  "name": "Quiz DCG",
+  "short_name": "Quiz DCG",
+  "description": "Révisions DCG : droit fiscal UE 4 et droit des sociétés UE 2",
+  "lang": "fr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0D0C10",
+  "theme_color": "#0D0C10",
+  "icons": [
+    {
+      "src": "app-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "app-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "app-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
