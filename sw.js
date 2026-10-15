@@ -1,6 +1,6 @@
-// Quiz DCG v3 — réseau d'abord : toute mise à jour en ligne est prise immédiatement ; cache = secours hors connexion.
-const C="quiz-dcg-v3";
-const SHELL=["./","index.html","fiscal.html","societes.html","app.webmanifest","app-180.png","app-192.png","app-512.png","decor.webp","desk.webp","hands.webp","kevin.webp","lucas.webp","sofia.webp","thomas.webp"];
+// Quiz DCG v4 — réseau d'abord : toute mise à jour en ligne est prise immédiatement ; cache = secours hors connexion.
+const C="quiz-dcg-v4";
+const SHELL=["./","index.html","fiscal.html","societes.html","app.webmanifest","app-180.png","app-192.png","app-512.png","decor.webp","desk.webp","hands.webp","kevin.webp","lucas.webp","sofia.webp","henri.webp","thomas.webp"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(SHELL.map(u=>new Request(u,{cache:"reload"})))));self.skipWaiting()});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
 self.addEventListener("fetch",e=>{
