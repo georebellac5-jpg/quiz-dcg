@@ -155,6 +155,8 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--acc);outline-offset
 .prog.segs i.cur{background:var(--acc);box-shadow:0 0 10px var(--acc);animation:blink 1s ease-in-out infinite}
 .prog.segs i.ok{background:var(--good);box-shadow:0 0 8px rgba(87,214,155,.7)}
 .prog.segs i.ko{background:var(--bad)}
+.prog.segs i.done{background:rgba(var(--acc-rgb),.45)}
+.qn.story::before{content:"An "!important}
 .prog.bar{height:5px;border-radius:2px;background:rgba(255,255,255,.08);overflow:hidden}
 .prog.bar i{display:block;height:100%;width:0;background:var(--acc);box-shadow:0 0 12px var(--acc);transition:width .5s var(--out)}
 .stage{position:relative;padding:22px 18px;display:flex;flex-direction:column;gap:16px;overflow:hidden}
@@ -286,7 +288,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--acc);outline-offset
 /* ===== Scène POV (jeu) ===== */
 body.pov[data-view="game"]{overflow:hidden}
 #game.pov,#game.pov[style]{position:fixed;inset:0;z-index:20;display:flex;flex-direction:row;justify-content:center;align-items:stretch;gap:0;max-width:none;width:auto;margin:0;padding:0;background:#04060B;overflow:hidden}
-#game.pov::before{content:"";position:absolute;inset:-60px;background:url(dubai.webp) center/cover;filter:blur(34px) brightness(.32);transform:scale(1.1)}
+#game.pov::before{content:"";position:absolute;inset:-60px;background:var(--decor,url(dubai.webp)) center/cover;filter:blur(34px) brightness(.32);transform:scale(1.1)}
 .scene{position:relative;height:100%;width:min(100vw,calc(100vh*.5582));width:min(100vw,calc(100dvh*.5582));overflow:hidden;box-shadow:0 0 80px rgba(0,0,0,.8)}
 .stagebox{position:absolute;top:0;left:50%;height:100%;aspect-ratio:1438/2576;transform:translateX(-50%)}
 .sl{position:absolute;left:0;width:100%;display:block;pointer-events:none;user-select:none;-webkit-user-select:none}
@@ -346,6 +348,25 @@ body.pov[data-view="game"]{overflow:hidden}
 #game.pov .fb p{grid-column:auto}
 #game.pov .nextrow{flex-direction:row-reverse;width:auto;grid-column:auto;grid-row:auto;align-items:center}
 @media (max-height:700px){#game.pov .q{font-size:14px}#game.pov .opt{font-size:12.5px;padding:7px 10px}#game.pov .handzone{min-height:56px}}
+/* Mode Histoire */
+#intro{position:fixed;inset:0;z-index:30;background:#000;display:flex;align-items:center;justify-content:center}
+#intro video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#intro .introcap{position:absolute;left:0;right:0;bottom:calc(90px + env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;pointer-events:none}
+#intro .introcap b{font:700 clamp(24px,7vw,40px)/1.1 var(--f-d);letter-spacing:.04em;color:#fff;text-shadow:0 2px 24px rgba(0,0,0,.8)}
+.introskip{position:absolute;right:16px;top:calc(16px + env(safe-area-inset-top));background:rgba(0,0,0,.45)}
+#year{position:relative;display:flex;flex-direction:column;gap:16px}
+.yearbg{position:fixed;inset:-40px;z-index:0;background-size:cover;background-position:center;filter:blur(14px) brightness(.32);transform:scale(1.05)}
+.yearcard{position:relative;z-index:1;display:flex;flex-direction:column;gap:16px}
+.roster{display:grid;grid-template-columns:1fr;gap:8px}
+@media (min-width:700px){.roster{grid-template-columns:1fr 1fr}}
+.rc{display:grid;grid-template-columns:46px 1fr auto;align-items:center;gap:12px;padding:8px 12px 8px 8px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.025)}
+.rc img{width:46px;height:46px;border-radius:50%;object-fit:cover;object-position:50% 4%;background:#15171D;border:1px solid var(--line2)}
+.rc b{display:block;font:600 14px var(--f-b)}.rc small{display:block;font-size:12px;color:var(--muted)}
+.rc .cf{font:700 15px var(--f-x);text-align:right;min-width:52px}
+.rc .gb{grid-column:2/4;height:4px;border-radius:2px;background:rgba(255,255,255,.08);overflow:hidden}.rc .gb i{display:block;height:100%}
+.rc.gone{opacity:.45}.rc.gone img{filter:grayscale(1)}
+.rc.new{border-color:rgba(var(--acc-rgb),.55);box-shadow:0 0 20px -10px rgba(var(--acc-rgb),.9)}
+.mood .bar{display:inline-block;width:46px;height:5px;border-radius:3px;background:rgba(255,255,255,.12);overflow:hidden;vertical-align:middle}.mood .bar i{display:block;height:100%}
 /* Mode Classique : cartes simples, sans scène */
 #game:not(.pov) .stagebox,#game:not(.pov) .sfx,#game:not(.pov) .handzone,#game:not(.pov) .grow,#game:not(.pov) .cname{display:none}
 #game:not(.pov) .scene{display:contents}
@@ -393,6 +414,7 @@ body.pov[data-view="game"]{overflow:hidden}
           <div class="block"><div class="lbl"><span>Mode</span></div><div class="seg" id="modes"></div></div>
           <div class="block" id="lenblock"><div class="lbl"><span>Questions</span></div><div class="seg" id="lens"></div></div>
           <button class="btn big sticky press" id="go" type="button"><span id="golbl">Lancer</span><span class="arr" aria-hidden="true">→</span></button>
+          <button class="ghost press" id="newcar" type="button" hidden>Nouvelle carrière (efface la sauvegarde)</button>
           <p class="hint">Clavier : 1–4 ou A–D pour répondre · Entrée pour passer · P pour la pause</p>
           <div class="records" id="records"></div>
           <div class="hist" id="hist" hidden></div>
@@ -415,7 +437,7 @@ body.pov[data-view="game"]{overflow:hidden}
       </div>
       <div class="sfx" id="sfx" aria-hidden="true"></div>
       <div class="ui">
-        <div class="hudbar"><button class="xq press" id="quit" type="button" aria-label="Arrêter et voir mon résultat">✕</button><span class="qn" id="count"></span><span class="lives" id="lives" hidden></span><span class="combo" id="combo" hidden></span><span class="score"><b id="score">0</b> pts</span></div>
+        <div class="hudbar"><button class="xq press" id="quit" type="button" aria-label="Arrêter et voir mon résultat">✕</button><span class="qn" id="count"></span><span class="lives" id="lives" hidden></span><span class="combo" id="combo" hidden></span><span class="score"><b id="score">0</b> <span id="unit">pts</span></span></div>
         <div class="prog" id="prog"></div>
         <div class="bubble hud" id="stage">
           <div class="who"><span class="cname" id="cname"></span><span class="ctag" id="ctag"></span></div>
@@ -430,6 +452,26 @@ body.pov[data-view="game"]{overflow:hidden}
         <p id="fbe"></p>
         <div class="nextrow"><button class="btn press" id="next" type="button">Suivant</button><div class="timer" aria-hidden="true"><i id="tbar"></i></div></div>
       </div>
+    </div>
+  </section>
+
+  <!-- HISTOIRE : vidéo d'intro -->
+  <section id="intro" hidden aria-label="Introduction">
+    <video id="introv" playsinline preload="none" poster="intro_poster.jpg"></video>
+    <div class="introcap"><span class="kicker">Mode Histoire</span><b>Ta carrière commence.</b></div>
+    <button class="ghost press introskip" id="skip" type="button">Passer →</button>
+  </section>
+  <!-- HISTOIRE : bilan annuel -->
+  <section id="year" hidden aria-labelledby="y-t">
+    <div class="yearbg" id="yearbg" aria-hidden="true"></div>
+    <div class="panel hud yearcard">
+      <span class="kicker" id="y-k"></span>
+      <h1 class="h1" id="y-t"></h1>
+      <p class="sub" id="y-s"></p>
+      <div class="stats" id="y-stats"></div>
+      <div class="lbl"><span id="y-rl">Portefeuille clients</span></div>
+      <div class="roster" id="y-roster"></div>
+      <div class="row"><button class="btn press" id="y-next" type="button"></button><button class="ghost press" id="y-quit" type="button">Quitter · progression sauvegardée</button></div>
     </div>
   </section>
 
@@ -1342,7 +1384,7 @@ const SUBJ = {
 ["c12","Cas · La SAS Tricots Normands veut faire entrer Projetbio au capital par l'émission d'actions de préférence, sans que les associés actuels perdent leur pouvoir de décision. Quel type d'actions émettre ?",["Des actions de préférence sans droit de vote","Des actions de préférence à droit de vote double","Des actions ordinaires à droit de vote plein","Des obligations convertibles en actions"],"ADP sans droit de vote : financement par un investisseur sans dilution du pouvoir de décision des associés en place.","Les actions de préférence peuvent être privées du droit de vote, temporairement ou définitivement, en contrepartie d'avantages financiers (dividende prioritaire ou majoré). Projetbio apporte des fonds sans peser sur les décisions collectives. Un vote double renforcerait au contraire son pouvoir ; des obligations convertibles ne sont pas des actions de préférence."],
 ["c12","Cas · La SAS Tricots Normands réserve à Projetbio une augmentation de capital en numéraire de 1 200 000 €. Que faut-il faire des droits préférentiels de souscription des associés ?",["Les supprimer par décision collective au profit de Projetbio","Les maintenir : ils ne peuvent jamais être écartés en SAS","Rien : le DPS n'existe pas dans une SAS","Les racheter aux associés au prix de la prime d'émission"],"Augmentation réservée : les associés suppriment le DPS par décision collective, au profit de l'investisseur désigné.","Le droit préférentiel de souscription protège les associés contre la dilution lors des augmentations en numéraire ; les règles de la SA s'appliquent à la SAS. Pour réserver l'émission à Projetbio, la collectivité des associés, compétente pour toute augmentation de capital, doit supprimer ce droit au profit de cette personne dénommée, au vu des rapports du président et du commissaire aux comptes."]] }
 };
-const VERSION = "v5 · 2026-10-16 · 416 + 454 questions";
+const VERSION = "v6 · 2026-10-16 · 416 + 454 questions";
 
 /* ======================= OUTILS ======================= */
 const $ = id => document.getElementById(id);
@@ -1381,7 +1423,7 @@ document.addEventListener("click",e=>{const a=e.target.closest("[data-act]");if(
 
 /* ======================= NAVIGATION ======================= */
 function show(id){
-  ["home","setup","game","end"].forEach(s=>$(s).hidden=s!==id);
+  ["home","setup","game","end","year","intro"].forEach(s=>$(s).hidden=s!==id);
   document.body.dataset.view=id;
   anim($(id),[{opacity:0,transform:"translateY(22px) scale(.985)",filter:"blur(6px)"},{opacity:1,transform:"none",filter:"blur(0)"}],{duration:560,easing:OUT});
   window.scrollTo({top:0});
@@ -1408,11 +1450,11 @@ $("subjects").onclick=e=>{const b=e.target.closest("[data-s]");if(!b)return;setS
 function moveInd(seg){const on=seg.querySelector('[aria-pressed="true"]'),ind=seg.querySelector(".ind");if(!on||!ind)return;
   ind.style.width=on.offsetWidth+"px";ind.style.transform=`translateX(${on.offsetLeft-4}px)`}
 function renderSetup(){
-  len=store.get("len",20); mode=store.get("mode","classic"); if(mode==="histoire")mode="classic";
+  len=store.get("len",20); mode=store.get("mode","classic");
   $("s-kicker").textContent=`${S.ue} · ${S.name}`;
   $("s-title").innerHTML=`${esc(S.name.split(" ").slice(0,-1).join(" ")||S.name)} <span>${esc(S.name.split(" ").slice(-1)[0])}</span>`;
   $("chaps").innerHTML=Object.entries(S.CH).map(([k,v])=>`<button class="tile" type="button" data-k="${k}" aria-pressed="${sel.has(k)}"><span class="ico">${S.ICO[k]}</span><span><span class="tt">${esc(v)}</span><span class="tn">${S.Q.filter(q=>q[0]===k).length} questions</span></span><span class="chk" aria-hidden="true">✓</span></button>`).join("");
-  $("modes").innerHTML='<span class="ind"></span>'+[["classic","Classique","Note sur 20"],["survie","Survie","3 vies"],["histoire","Histoire","Carrière"]].map(([k,a,b])=>`<button class="segb" type="button" data-m="${k}" aria-pressed="${mode===k}" ${k==="histoire"?"disabled":""}><b>${a}</b><small>${b}</small>${k==="histoire"?'<span class="soon">Bientôt</span>':""}</button>`).join("");
+  $("modes").innerHTML='<span class="ind"></span>'+[["classic","Classique","Note sur 20"],["survie","Survie","3 vies"],["histoire","Histoire","Carrière 10 ans"]].map(([k,a,b])=>`<button class="segb" type="button" data-m="${k}" aria-pressed="${mode===k}"><b>${a}</b><small>${b}</small></button>`).join("");
   $("lens").innerHTML='<span class="ind"></span>'+[10,20,30,0].map(n=>`<button class="segb" type="button" data-n="${n}" aria-pressed="${len===n}"><b>${n||"Toutes"}</b></button>`).join("");
   refresh();preloadScene();
   requestAnimationFrame(()=>{moveInd($("modes"));moveInd($("lens"))});
@@ -1426,8 +1468,9 @@ function refresh(){
   const pool=S.Q.filter(q=>sel.has(q[0])).length, all=Object.keys(S.CH).length;
   $("selcount").textContent=sel.size?`${pool} questions dans la pioche`:"Sélectionne au moins un chapitre";
   $("all").textContent=sel.size===all?"Tout décocher":"Tout cocher";
-  $("go").disabled=!sel.size;
-  $("golbl").textContent=!sel.size?"Choisis un chapitre":mode==="survie"?"Lancer la survie":`Lancer · ${len?Math.min(len,pool):pool} questions`;
+  const sv=mode==="histoire"?loadStory():null;$("newcar").hidden=!sv;
+  $("go").disabled=!sel.size&&!sv;
+  $("golbl").textContent=mode==="histoire"?(sv?`Continuer · Année ${sv.year} / 10`:(sel.size?"Commencer ma carrière":"Choisis un chapitre")):!sel.size?"Choisis un chapitre":mode==="survie"?"Lancer la survie":`Lancer · ${len?Math.min(len,pool):pool} questions`;
   const rec=store.get("rec",{pts:0,surv:0});
   $("records").innerHTML=(rec.pts?`<span class="chip">Record classique <b>${fmt(rec.pts)} pts</b></span>`:"")+(rec.surv?`<span class="chip">Record survie <b>${rec.surv}</b></span>`:"");
   const h=store.get("hist",[]);
@@ -1447,13 +1490,33 @@ $("lens").onclick=e=>{const b=e.target.closest("[data-n]");if(!b)return;len=+b.d
 
 /* ======================= CLIENTS (scène POV) ======================= */
 const CLIENTS=[
-  {id:"kevin",name:"Kevin Tran",role:"Artisan électricien",img:"kevin.webp",ht:.06,hc:.235,cx:.5},
-  {id:"lucas",name:"Lucas Martin",role:"Fondateur de start-up",img:"lucas.webp",ht:.02,hc:.24,cx:.52},
-  {id:"sofia",name:"Sofia Lin",role:"Import-export",img:"sofia.webp",ht:0,hc:.215,cx:.525},
-  {id:"henri",name:"Henri Delcourt",role:"PDG de SA",img:"henri.webp",ht:0,hc:.215,cx:.51},
-  {id:"thomas",name:"Thomas Girard",role:"Gérant de SARL",img:"thomas.webp",video:"thomas.mp4",ht:.165,hc:.405,cx:.5}
+  {id:"gerard",name:"Gérard Lambert",short:"Gérard",role:"Boulanger",img:"gerard.webp",ht:0,hc:.195,cx:.5},
+  {id:"manon",name:"Manon Leroy",short:"Manon",role:"Coiffeuse",img:"manon.webp",ht:0,hc:.23,cx:.5},
+  {id:"yanis",name:"Yanis Belkacem",short:"Yanis",role:"Chauffeur VTC",img:"yanis.webp",ht:0,hc:.235,cx:.5},
+  {id:"kevin",name:"Kevin Tran",short:"Kevin",role:"Artisan électricien",img:"kevin.webp",ht:.06,hc:.235,cx:.5},
+  {id:"julie",name:"Julie Fontaine",short:"Julie",role:"Restauratrice",img:"julie.webp",ht:0,hc:.225,cx:.5},
+  {id:"laurent",name:"Dr Laurent Petit",short:"Laurent",role:"Médecin libéral",img:"laurent.webp",ht:0,hc:.22,cx:.5},
+  {id:"nicolas",name:"Nicolas Berger",short:"Nicolas",role:"Architecte",img:"nicolas.webp",ht:0,hc:.24,cx:.47},
+  {id:"lucas",name:"Lucas Martin",short:"Lucas",role:"Fondateur de start-up",img:"lucas.webp",ht:.02,hc:.24,cx:.52},
+  {id:"thomas",name:"Thomas Girard",short:"Thomas",role:"Gérant de SARL",img:"thomas.webp",video:"thomas.mp4",ht:.165,hc:.405,cx:.5},
+  {id:"philippe",name:"Philippe Garnier",short:"Philippe",role:"Avocat d'affaires",img:"philippe.webp",ht:0,hc:.2,cx:.535},
+  {id:"helene",name:"Hélène Morel",short:"Hélène",role:"Directrice financière",img:"helene.webp",ht:0,hc:.183,cx:.5},
+  {id:"sofia",name:"Sofia Lin",short:"Sofia",role:"Import-export",img:"sofia.webp",ht:0,hc:.215,cx:.525},
+  {id:"marc",name:"Marc Valentin",short:"Marc",role:"Promoteur immobilier",img:"marc.webp",ht:0,hc:.2,cx:.5},
+  {id:"catherine",name:"Catherine Aubry",short:"Catherine",role:"Présidente de holding",img:"catherine.webp",ht:0,hc:.205,cx:.52},
+  {id:"henri",name:"Henri Delcourt",short:"Henri",role:"PDG de SA",img:"henri.webp",ht:0,hc:.215,cx:.51}
 ];
-const HEADTOP=42.5, HEAD=8, PER_CLIENT=3;
+const CBY=Object.fromEntries(CLIENTS.map(c=>[c.id,c]));
+const HEADTOP=33.5, HEAD=10.5, PER_CLIENT=3;
+/* Époques du mode Histoire (le mode Survie se joue à Dubaï) */
+const ERAS=[
+  {id:"banlieue",name:"Banlieue",from:1,to:2,img:"banlieue.webp",desk:"desk_banlieue.webp",dt:41.848,fee:300,clients:["gerard","manon","yanis","kevin"]},
+  {id:"paris",name:"Paris",from:3,to:5,img:"paris.webp",desk:"desk_paris.webp",dt:44.565,fee:900,clients:["julie","laurent","nicolas","lucas","thomas"]},
+  {id:"newyork",name:"New York",from:6,to:8,img:"newyork.webp",desk:"desk_newyork.webp",dt:48.525,fee:2500,clients:["philippe","helene","sofia"]},
+  {id:"dubai",name:"Dubaï",from:9,to:10,img:"dubai.webp",desk:"desk_dubai.webp",dt:59.39,fee:6000,clients:["marc","catherine","henri"]}
+];
+const eraOf=y=>ERAS.find(e=>y>=e.from&&y<=e.to)||ERAS[ERAS.length-1];
+function setDecor(e){document.querySelector(".bgimg").src=e.img;const d=document.querySelector(".desk");d.src=e.desk;d.style.top=e.dt+"%";d.style.height=(100-e.dt)+"%";$("game").style.setProperty("--decor",`url(${e.img})`)}
 const MOODS={"2":["Ravi","#57D69B"],"1":["Satisfait","#8FE8B8"],"0":["Neutre","#B9C3DB"],"-1":["Mécontent","#FF9A6B"],"-2":["Furieux","#E8566F"]};
 
 const CEL={}; let curEl=null, mood=0, idleT=0, POV=false;
@@ -1501,6 +1564,7 @@ function nameplate(c){$("cname").innerHTML=`<b>${esc(c.name)}</b> · ${esc(c.rol
 /* Changement de client : « mise au point » — l'ancien se floute et s'efface, le nouveau sort du flou */
 function changeClient(c){
   const old=curEl,el=clientEl(c);curEl=el;mood=0;setMood(false);nameplate(c);
+  if(old===el)return;
   if(old&&old!==el){stopIdle(old.firstChild);
     const a=anim(old,[{opacity:1,filter:"blur(0px) brightness(1)"},{opacity:0,filter:"blur(18px) brightness(1.35)"}],{duration:520,easing:"cubic-bezier(.5,0,.9,.5)",fill:"forwards"});
     const done=()=>{vidStop(old);if(curEl!==old)old.remove();if(a)a.cancel()};a?a.finished.then(done,done):done()}
@@ -1522,12 +1586,14 @@ function idleMove(){const el=curEl;if(!el||reduce||$("game").hidden)return;const
 function lean(){const f=curEl&&curEl.querySelector(".cl-front");anim(f,[{transform:"none"},{transform:"translateY(-.8%) scale(1.016)"},{transform:"none"}],{duration:1200,easing:"ease-in-out"})}
 function faceSvg(l,col){const m={"2":"M7 13.5 Q12 19 17 13.5","1":"M8 14.5 Q12 17 16 14.5","0":"M8 15.5 H16","-1":"M8 16.5 Q12 14 16 16.5","-2":"M7.5 17 Q12 12.5 16.5 17"}[l];
   return `<svg class="face" viewBox="0 0 24 24" fill="none" stroke="${col}" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="9" cy="10.3" r=".8" fill="${col}"/><circle cx="15" cy="10.3" r=".8" fill="${col}"/><path d="${m}"/>${l<=-1?'<path d="M7 8 L10.3 9.2 M17 8 L13.7 9.2"/>':""}</svg>`}
-function setMood(pop){const [lb,col]=MOODS[String(mood)],c=curEl&&curEl._c;
-  $("mood").innerHTML=faceSvg(mood,col)+`<span><b>${c?esc(c.name.split(" ")[0]):""}</b> · <span style="color:${col}">${lb}</span></span>`;
+function moodFromConf(v){return v>=85?2:v>=65?1:v>=45?0:v>=25?-1:-2}
+function setMood(pop){const c=curEl&&curEl._c;if(gmode==="histoire"&&c&&H&&H.roster[c.id])mood=moodFromConf(H.roster[c.id].conf);
+  const [lb,col]=MOODS[String(mood)];
+  $("mood").innerHTML=faceSvg(mood,col)+(gmode==="histoire"&&c&&H&&H.roster[c.id]?`<span><b>${esc(c.short)}</b> · <span style="color:${col}">${lb}</span></span><span class="bar"><i style="width:${H.roster[c.id].conf}%;background:${col}"></i></span>`:`<span><b>${c?esc(c.short):""}</b> · <span style="color:${col}">${lb}</span></span>`);
   if(pop)anim($("mood"),[{transform:"scale(.8)"},{transform:"scale(1.08)"},{transform:"none"}],{duration:420,easing:SPRING})}
 function leaveGame(){clearTimeout(idleT);Object.values(CEL).forEach(vidStop)}
 function react(ok){
-  mood=Math.max(-2,Math.min(2,mood+(ok?1:-1)));setMood(true);
+  if(gmode!=="histoire")mood=Math.max(-2,Math.min(2,mood+(ok?1:-1)));setMood(true);
   const inn=curEl&&curEl.firstChild;if(inn)stopIdle(inn);
   if(ok)anim(inn,[{transform:"none"},{transform:"translateY(1.1%)"},{transform:"translateY(-.3%) scale(1.01)"},{transform:"translateY(.7%)"},{transform:"none"}],{duration:950,easing:"ease-in-out"});
   else anim(inn,[{transform:"none"},{transform:"translateX(-.9%) rotate(-.8deg)"},{transform:"translateX(.9%) rotate(.8deg)"},{transform:"translateX(-.5%) rotate(-.4deg)"},{transform:"translateY(.9%) scale(.992)"},{transform:"none"}],{duration:1300,easing:"ease-in-out"});
@@ -1536,38 +1602,124 @@ function react(ok){
 }
 function nextClient(){const pool=CLIENTS.filter(c=>!curEl||c.id!==curEl._c.id);return pool[Math.floor(Math.random()*pool.length)]}
 let stintOk=0,stintN=0;
-function preloadScene(){["dubai.webp","desk_dubai.webp",...CLIENTS.map(c=>c.img)].forEach(u=>{const i=new Image();i.src=u})}
+function preloadScene(){[...ERAS.map(e=>e.img),...ERAS.map(e=>e.desk),...CLIENTS.map(c=>c.img)].forEach(u=>{const i=new Image();i.src=u})}
+
+/* ======================= HISTOIRE ======================= */
+/* 10 ans · 10 questions par an · 2 questions d'affilée par client · confiance 0-100 : à 0 le client part ; plus de client = cabinet fermé.
+   Seul le mode Histoire garde une sauvegarde (localStorage). */
+let H=null, SR=null;
+const SKEY=()=>S.prefix+"histoire";
+function loadStory(){try{const v=JSON.parse(localStorage.getItem(SKEY()));return v&&v.v===1?v:null}catch(e){return null}}
+function saveStory(){if(!H)return;try{localStorage.setItem(SKEY(),JSON.stringify(H))}catch(e){}}
+function clearStory(){try{localStorage.removeItem(SKEY())}catch(e){}}
+function joinEra(e){const out=[];e.clients.forEach(id=>{if(!H.roster[id]){H.roster[id]={conf:60,active:true,since:H.year};out.push(id)}});return out}
+function newCareer(){
+  H={v:1,year:1,qy:0,ca:0,yCA:0,yOk:0,yN:0,roster:{},cur:null,left:0,sel:[...sel],log:[],closed:false};
+  joinEra(ERAS[0]);saveStory();playIntro();
+}
+function playIntro(){const v=$("introv");let ended=false;show("intro");
+  const done=()=>{if(ended)return;ended=true;v.pause();v.removeAttribute("src");v.load();showYear("start")};
+  v.src="intro.mp4";v.muted=false;try{v.currentTime=0}catch(e){}
+  const p=v.play();if(p&&p.catch)p.catch(()=>{v.muted=true;v.play().catch(done)});
+  v.onended=done;v.onerror=done;$("skip").onclick=done;
+  anim($("intro").querySelector(".introcap"),[{opacity:0,transform:"translateY(14px)"},{opacity:1,transform:"none"}],{duration:900,delay:400,easing:OUT,fill:"backwards"})}
+function rosterCard(id,extra){const c=CBY[id],r=H.roster[id];const conf=r?r.conf:60,[lb,col]=MOODS[String(moodFromConf(conf))];
+  const gone=r&&!r.active;
+  return `<div class="rc${gone?" gone":""}${extra?" new":""}"><img src="${c.img}" alt=""><span><b>${esc(c.name)}</b><small>${esc(c.role)}${gone?` · parti en année ${r.leftYear}`:extra?" · nouveau client":""}</small></span><span class="cf" style="color:${gone?"var(--muted)":col}">${gone?"—":conf+" %"}</span><span class="gb"><i style="width:${gone?0:conf}%;background:${col}"></i></span></div>`}
+function showYear(kind){
+  const cur=eraOf(H.year),nx=eraOf(H.year+1),moving=kind==="end"&&nx.id!==cur.id;
+  $("yearbg").style.backgroundImage=`url(${(kind==="end"?nx:cur).img})`;
+  const act=Object.keys(H.roster).filter(id=>H.roster[id].active);
+  if(kind==="start"){
+    $("y-k").textContent=`${cur.name} · Année 1 / 10`;
+    $("y-t").innerHTML="Ton cabinet <span>ouvre</span>";
+    $("y-s").textContent="Premier bureau, en banlieue. Chaque client te pose 2 questions d'affilée. Bonne réponse : sa confiance monte et tu factures des honoraires. Mauvaise : elle chute. À 0 %, il te quitte. Plus aucun client : le cabinet ferme.";
+    $("y-stats").innerHTML="";$("y-rl").textContent="Tes premiers clients";
+    $("y-roster").innerHTML=act.map(id=>rosterCard(id,true)).join("");
+    $("y-next").textContent="Ouvrir le cabinet →";
+  }else{
+    $("y-k").textContent=`Bilan · Année ${H.year} / 10 · ${cur.name}`;
+    $("y-t").innerHTML=moving?`Cap sur <span>${nx.name}</span>`:`Année ${H.year} <span>bouclée</span>`;
+    $("y-s").textContent=moving?"Ton cabinet monte en gamme et déménage. Des clients plus exigeants arrivent ; ceux qui te font confiance te suivent.":"Ton portefeuille te suit l'an prochain. Les clients fidèles gagnent +5 % de confiance.";
+    $("y-stats").innerHTML=[[fmt(H.yCA)+" €","honoraires de l'année"],[fmt(H.ca)+" €","chiffre d'affaires total"],[`${H.yOk}/${H.yN}`,"bonnes réponses"],[act.length,"clients actifs"]].map(([v,l])=>`<div class="st"><b>${v}</b><span>${l}</span></div>`).join("");
+    const arriving=moving?nx.clients.filter(id=>!H.roster[id]):[];
+    $("y-rl").textContent=moving?"Portefeuille · et nouveaux clients":"Portefeuille clients";
+    $("y-roster").innerHTML=Object.keys(H.roster).sort((a,b)=>(H.roster[b].active-H.roster[a].active)||(H.roster[b].conf-H.roster[a].conf)).map(id=>rosterCard(id)).join("")+arriving.map(id=>rosterCard(id,true)).join("");
+    $("y-next").textContent=moving?`Déménager à ${nx.name} →`:`Année ${H.year+1} →`;
+  }
+  $("y-next").onclick=()=>{if(kind==="end")nextYear();startStorySession()};
+  $("y-quit").onclick=()=>{saveStory();renderSetup();show("setup")};
+  show("year");
+  [...$("y-roster").children].forEach((c,k)=>anim(c,[{opacity:0,transform:"translateY(12px)"},{opacity:1,transform:"none"}],{duration:480,delay:200+k*60,easing:OUT,fill:"backwards"}));
+}
+function nextYear(){H.year++;H.qy=0;H.yCA=0;H.yOk=0;H.yN=0;H.left=0;H.cur=null;
+  Object.values(H.roster).forEach(r=>{if(r.active)r.conf=Math.min(100,r.conf+5)});joinEra(eraOf(H.year));saveStory()}
+function startStorySession(){
+  const ks=H.sel&&H.sel.length?H.sel:Object.keys(S.CH),pool=S.Q.filter(q=>ks.includes(q[0]));
+  const need=(10-H.year)*10+(10-H.qy)+5;let list=[];while(list.length<need)list=list.concat(shuffle(pool));
+  start(list.slice(0,need),"histoire");
+}
+function storyPick(){
+  const act=Object.keys(H.roster).filter(id=>H.roster[id].active);
+  if(!H.cur||H.left<=0||!H.roster[H.cur]||!H.roster[H.cur].active){
+    const pool=act.filter(id=>id!==H.cur),src=pool.length?pool:act;H.cur=src[Math.floor(Math.random()*src.length)];H.left=2;
+  }
+  if(!curEl||curEl._c.id!==H.cur)changeClient(CBY[H.cur]);else setTimeout(lean,450);
+  H.left--;
+}
+function storyAnswer(d,pick){
+  const r=H.roster[H.cur],e=eraOf(H.year);
+  r.conf=Math.max(0,Math.min(100,r.conf+(pick.ok?10:-20)));
+  if(pick.ok){const g=Math.round(e.fee*(.6+r.conf/100)/10)*10,from=H.ca;H.ca+=g;H.yCA+=g;countUp($("score"),from,H.ca,700,fmt)}
+  H.yN++;if(pick.ok)H.yOk++;
+  H.log.push([S.Q.indexOf(d.q),pick.ok?1:0,pick.t]);
+  if(r.conf<=0){r.active=false;r.leftYear=H.year;H.left=0}
+  if(!Object.values(H.roster).some(x=>x.active))H.closed=true;
+  saveStory();
+}
+function storyEnd(closed){
+  SR={closed,ca:H.ca,year:H.year,loyal:Object.values(H.roster).filter(r=>r.active).length};
+  log=H.log.filter(x=>S.Q[x[0]]).map(([k,ok,p])=>({q:S.Q[k],ok:!!ok,pick:p}));
+  clearStory();finish();
+}
 
 /* ======================= PARTIE ======================= */
 function start(list,m){
   gmode=m; deck=list.map(q=>({q,opts:shuffle(q[2].map((t,j)=>({t,ok:j===0})))}));
   i=0;log=[];streak=0;best=0;pts=0;lives=3;t0=Date.now();busy=false;
-  $("score").textContent="0";
-  const segs=gmode==="classic"&&deck.length<=40;
+  const story=gmode==="histoire";
+  $("score").textContent=story?fmt(H.ca):"0";$("unit").textContent=story?"€":"pts";$("count").classList.toggle("story",story);
+  const segs=story||(gmode==="classic"&&deck.length<=40);
   $("prog").className="prog "+(segs?"segs":"bar");
-  $("prog").innerHTML=segs?deck.map(()=>"<i></i>").join(""):"<i></i>";
+  $("prog").innerHTML=story?Array.from({length:10},(_,k)=>`<i${k<H.qy?' class="done"':""}></i>`).join(""):segs?deck.map(()=>"<i></i>").join(""):"<i></i>";
   $("lives").hidden=gmode!=="survie";drawLives(-1);setCombo();
   POV=gmode!=="classic";$("game").classList.toggle("pov",POV);document.body.classList.toggle("pov",POV);
   $("clients").innerHTML="";leaveGame();curEl=null;$("game").style.paddingBottom="";
-  show("game");if(POV)changeClient(CLIENTS[Math.floor(Math.random()*CLIENTS.length)]);render();
+  if(POV)setDecor(story?eraOf(H.year):ERAS[ERAS.length-1]);
+  show("game");if(POV&&!story)changeClient(CLIENTS[Math.floor(Math.random()*CLIENTS.length)]);render();
 }
-$("go").onclick=()=>{if(!sel.size)return;const pool=shuffle(S.Q.filter(q=>sel.has(q[0])));
+$("newcar").onclick=()=>{clearStory();refresh()};
+$("go").onclick=()=>{
+  if(mode==="histoire"){const sv=loadStory();if(sv){H=sv;if(!H.sel.length&&sel.size)H.sel=[...sel];startStorySession()}else if(sel.size)newCareer();return}
+  if(!sel.size)return;const pool=shuffle(S.Q.filter(q=>sel.has(q[0])));
   const r=$("go").getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,S.color,24,140);
   setTimeout(()=>start(mode==="survie"?pool:(len?pool.slice(0,len):pool),mode),120)};
 
 function render(){
   const d=deck[i];locked=false;busy=false;stopTimer();
-  $("count").innerHTML=gmode==="survie"?`<span class="lw">Question </span><b>${i+1}</b>`:`<span class="lw">Question </span><b>${i+1}</b> / ${deck.length}`;
+  const si=gmode==="histoire"?H.qy:i;
+  $("count").innerHTML=gmode==="histoire"?`<span class="lw">Année </span><b>${H.year}</b> · ${H.qy+1}/10`:gmode==="survie"?`<span class="lw">Question </span><b>${i+1}</b>`:`<span class="lw">Question </span><b>${i+1}</b> / ${deck.length}`;
   $("ctag").textContent=`Ch. ${S.ICO[d.q[0]]} · ${S.CH[d.q[0]]}`;
   $("qtext").textContent=d.q[1];
   $("opts").innerHTML=d.opts.map((o,j)=>`<li><button class="opt" type="button" data-j="${j}"><span class="k">${"ABCD"[j]}</span><span class="t">${esc(o.t)}</span><span class="ic" aria-hidden="true"></span></button></li>`).join("");
   $("fb").hidden=true;$("handzone").style.height="";$("mood").style.visibility="";
-  if(POV){if(i>0&&i%PER_CLIENT===0)changeClient(nextClient());else if(i>0)setTimeout(lean,450)}
+  if(gmode==="histoire")storyPick();
+  else if(POV){if(i>0&&i%PER_CLIENT===0)changeClient(nextClient());else if(i>0)setTimeout(lean,450)}
   else{$("game").style.paddingBottom="";const st=$("stage").getBoundingClientRect();if(st.top<0)window.scrollTo({top:window.scrollY+st.top-80,behavior:reduce?"auto":"smooth"})}
   const O=$("opts");O.classList.add("calm");if(document.activeElement)document.activeElement.blur();
   let mx=null,my=null;O.onpointermove=e=>{if(mx===null){mx=e.clientX;my=e.clientY;return}if(Math.abs(e.clientX-mx)+Math.abs(e.clientY-my)>6){O.classList.remove("calm");O.onpointermove=null}};
   const p=$("prog");
-  if(p.classList.contains("segs")){[...p.children].forEach(x=>x.classList.remove("cur"));p.children[i]&&p.children[i].classList.add("cur")}
+  if(p.classList.contains("segs")){[...p.children].forEach(x=>x.classList.remove("cur"));p.children[si]&&p.children[si].classList.add("cur")}
   else p.firstChild.style.width=`${Math.min(100,i/deck.length*100)}%`;
   anim($("ctag"),[{opacity:0,transform:"translateY(-8px)"},{opacity:1,transform:"none"}],{duration:420,easing:SPRING});
   anim($("stage"),[{opacity:0,transform:"translateY(-10px) scale(.97)"},{opacity:1,transform:"none"}],{duration:460,easing:OUT});
@@ -1581,31 +1733,34 @@ function answer(j){
   btns.forEach((b,k)=>{b.disabled=true;b.classList.add(k===gi?"good":k===j?"bad":"dim")});
   log.push({q:d.q,ok:pick.ok,pick:pick.t});
   const r=btns[j].getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
-  const segs=$("prog").classList.contains("segs")?$("prog").children:null;
+  const segs=$("prog").classList.contains("segs")?$("prog").children:null,si=gmode==="histoire"?H.qy:i;
   if(pick.ok){
     streak++;best=Math.max(best,streak);const m=mult(streak),gain=10*m,from=pts;pts+=gain;
-    countUp($("score"),from,pts,500,fmt);
+    if(gmode!=="histoire")countUp($("score"),from,pts,500,fmt);
     anim($("score").parentNode,[{transform:"scale(1)"},{transform:"scale(1.16)"},{transform:"scale(1)"}],{duration:420,easing:SPRING});
     burst(cx,cy,"#57D69B",12,90);
     anim(btns[j],[{transform:"scale(1)"},{transform:"scale(1.035)"},{transform:"scale(1)"}],{duration:460,easing:SPRING});
-    if(segs&&segs[i])segs[i].className="ok";
+    if(segs&&segs[si])segs[si].className="ok";
   }else{
     const lost=streak>=3;streak=0;
     anim($("stage"),[{transform:"translateX(0)"},{transform:"translateX(-11px)"},{transform:"translateX(9px)"},{transform:"translateX(-6px)"},{transform:"translateX(3px)"},{transform:"translateX(0)"}],{duration:460,easing:"ease-out"});
     anim($("vig"),[{opacity:0},{opacity:1,offset:.2},{opacity:0}],{duration:700,easing:"ease-out"});
     anim(btns[gi],[{transform:"scale(1)"},{transform:"scale(1.03)"},{transform:"scale(1)"}],{duration:520,delay:250,iterations:2,easing:"ease-in-out"});
     if(gmode==="survie"){lives--;drawLives(lives);}
-    if(segs&&segs[i])segs[i].className="ko";
+    if(segs&&segs[si])segs[si].className="ko";
   }
+  if(gmode==="histoire")storyAnswer(d,pick);
   setCombo();if(POV)react(pick.ok);
   if(!segs)$("prog").firstChild.style.width=`${Math.min(100,(i+1)/deck.length*100)}%`;
-  const last=i+1>=deck.length||(gmode==="survie"&&lives<=0);
+  const last=gmode==="histoire"?(H.closed||H.qy+1>=10):(i+1>=deck.length||(gmode==="survie"&&lives<=0));
   const okW=["Validé","Exact","Imparable","Propre","Bien joué"];
   $("fb").className="fb "+(pick.ok?"ok":"ko");
-  if(POV){$("mood").style.visibility="hidden";const [lb,col]=MOODS[String(mood)];$("fbt").innerHTML=faceSvg(mood,col)+`<span style="color:${col};white-space:nowrap">${esc(curEl?curEl._c.name.split(" ")[0]:"")} · ${lb}</span>`}
+  if(gmode==="histoire"){$("mood").style.visibility="hidden";const r=H.roster[curEl._c.id],[lb,col]=MOODS[String(moodFromConf(r.conf))];
+    $("fbt").innerHTML=faceSvg(moodFromConf(r.conf),col)+`<span style="color:${col}">${esc(curEl._c.short)} · ${H.closed?"plus aucun client":r.active?`confiance ${r.conf} %`:"quitte le cabinet"}</span>`}
+  else if(POV){$("mood").style.visibility="hidden";const [lb,col]=MOODS[String(mood)];$("fbt").innerHTML=faceSvg(mood,col)+`<span style="color:${col};white-space:nowrap">${esc(curEl?curEl._c.short:"")} · ${lb}</span>`}
   else $("fbt").textContent=pick.ok?okW[Math.floor(Math.random()*okW.length)]:"Raté · la bonne est en vert";
   $("fbe").textContent=d.q[3];
-  $("next").textContent=last?"Résultat":"Suivant";
+  $("next").textContent=gmode==="histoire"?(H.closed?"Fermer le cabinet":H.qy+1>=10?"Bilan de l'année":"Suivant"):last?"Résultat":"Suivant";
   $("fb").hidden=false;
   startTimer(pick.ok?2400:6500);
   $("next").focus({preventScroll:true});
@@ -1633,14 +1788,18 @@ function togglePause(){if(!timer||timer.t)return;paused=!paused;paused?timer.pau
 $("pause").onclick=togglePause;
 async function next(){
   if(!locked||busy)return;busy=true;stopTimer();
-  const over=i+1>=deck.length||(gmode==="survie"&&lives<=0);
+  const over=gmode==="histoire"?false:(i+1>=deck.length||(gmode==="survie"&&lives<=0));
   const a=anim($("qwrap"),[{opacity:1,transform:"none"},{opacity:0,transform:"translateX(-50px)"}],{duration:230,easing:"cubic-bezier(.5,0,.9,.4)",fill:"forwards"});
   const b=anim($("fb"),(POV||isPhone())?[{transform:"none"},{transform:"translateY(105%)"}]:[{opacity:1},{opacity:0}],{duration:230,fill:"forwards"});
   if(a)await a.finished.catch(()=>{});
+  if(gmode==="histoire"){H.qy++;saveStory();if(a)a.cancel();if(b)b.cancel();
+    if(H.closed)return storyEnd(true);
+    if(H.qy>=10){leaveGame();if(H.year>=10)return storyEnd(false);return showYear("end")}
+    i++;return render()}
   i++;over?finish():render();if(a)a.cancel();if(b)b.cancel();
 }
 $("next").onclick=next;
-$("quit").onclick=()=>{stopTimer();leaveGame();log.length?finish():(renderSetup(),show("setup"))};
+$("quit").onclick=()=>{stopTimer();leaveGame();if(gmode==="histoire"){saveStory();document.body.classList.remove("pov");renderSetup();return show("setup")}log.length?finish():(renderSetup(),show("setup"))};
 document.addEventListener("keydown",e=>{
   if($("game").hidden||e.metaKey||e.ctrlKey||e.altKey)return;
   const k=e.key.toLowerCase();let idx="1234".indexOf(k);if(idx<0)idx="abcd".indexOf(k);
@@ -1654,7 +1813,7 @@ function drawLives(lostIdx){
   if(lostIdx>=0){const h=$("lives").children[lostIdx];anim(h,[{transform:"scale(1.7)"},{transform:"scale(.7)"},{transform:"scale(1)"}],{duration:620,easing:SPRING});
     const r=h.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,"#E8566F",12,60)}
 }
-function setCombo(){const c=$("combo");if(streak<2){c.hidden=true;return}
+function setCombo(){const c=$("combo");if(streak<2||gmode==="histoire"){c.hidden=true;return}
   const m=mult(streak),was=c.hidden;c.hidden=false;c.className="combo"+(streak>=6?" hot":"");
   c.innerHTML=`COMBO ×${streak}${m>1?`<small>pts ×${m}</small>`:""}`;
   anim(c,[{transform:`scale(${was?.4:1.4})`},{transform:"scale(1)"}],{duration:520,easing:SPRING})}
@@ -1683,7 +1842,8 @@ function finish(){
   stopTimer();leaveGame();document.body.classList.remove("pov");$("game").style.paddingBottom="";
   const n=log.length,ok=log.filter(l=>l.ok).length,note=Math.round(ok/n*200)/10,sec=Math.round((Date.now()-t0)/1000),surv=gmode==="survie";
   show("end");
-  const rec=store.get("rec",{pts:0,surv:0});const newRec=(surv?ok>rec.surv:pts>rec.pts)&&(surv?ok>=5:n>=10&&pts>0);
+  const story=gmode==="histoire";
+  const rec=store.get("rec",{pts:0,surv:0});const newRec=!story&&(surv?ok>rec.surv:pts>rec.pts)&&(surv?ok>=5:n>=10&&pts>0);
   if(newRec){surv?rec.surv=ok:rec.pts=pts;store.set("rec",rec)}
   const C=2*Math.PI*58,rv=$("ringval"),frac=surv?Math.min(1,ok/30):note/20,pass=surv?lives>0:note>=10,col=(surv?ok>=10:note>=10)?"#57D69B":"#E8566F";
   rv.style.stroke=col;rv.style.color=col;rv.style.strokeDasharray=C;rv.style.transition="none";rv.style.strokeDashoffset=C;
@@ -1693,7 +1853,8 @@ function finish(){
   $("mention").textContent=surv?(lives>0?"Pioche épuisée":ok>=25?"Survie monstrueuse":ok>=15?"Belle survie":ok>=8?"Tu peux tenir plus":"Chute rapide"):(note>=16?"Très bien":note>=14?"Bien":note>=12?"Assez bien":note>=10?"Passable":"À retravailler");
   const st=$("stamp");st.textContent=surv?(lives>0?"Invaincu":"Game over"):(pass?"Admis":"Ajourné");st.className="stamp"+(pass?" ok":"");
   if(reduce)st.style.opacity=1;else{st.style.opacity=0;st.animate([{opacity:0,transform:"scale(2.6) rotate(-26deg)"},{opacity:1,transform:"scale(.94) rotate(-8deg)",offset:.7},{opacity:1,transform:"scale(1) rotate(-8deg)"}],{duration:520,delay:1150,easing:"cubic-bezier(.5,0,.75,0)",fill:"forwards"}).finished.then(()=>{if(newRec)toast("Nouveau record")}).catch(()=>{})}
-  const tiles=[[surv?ok:`${ok}/${n}`,"bonnes réponses",surv&&newRec],[best,"meilleure série"],[fmt(pts),"points",newRec&&!surv],[`${Math.floor(sec/60)} min ${String(sec%60).padStart(2,"0")}`,"durée"]];
+  if(story){$("end-t").textContent="Bilan de carrière";$("mention").textContent=SR.closed?`Cabinet fermé · année ${SR.year}`:"Carrière accomplie";st.textContent=SR.closed?"Faillite":"Associé";st.className="stamp"+(SR.closed?"":" ok")}else $("end-t").textContent="Rapport de mission";
+  const tiles=story?[[`${ok}/${n}`,"bonnes réponses"],[fmt(SR.ca)+" €","chiffre d'affaires"],[SR.loyal,"clients fidèles"],[SR.year,"années d'exercice"]]:[[surv?ok:`${ok}/${n}`,"bonnes réponses",surv&&newRec],[best,"meilleure série"],[fmt(pts),"points",newRec&&!surv],[`${Math.floor(sec/60)} min ${String(sec%60).padStart(2,"0")}`,"durée"]];
   $("stats").innerHTML=tiles.map(([v,l,r])=>`<div class="st">${r?"<em>Record</em>":""}<b>${v}</b><span>${l}</span></div>`).join("");
   [...$("stats").children].forEach((c,k)=>anim(c,[{opacity:0,transform:"translateY(16px)"},{opacity:1,transform:"none"}],{duration:520,delay:300+k*90,easing:SPRING,fill:"backwards"}));
   $("bd").innerHTML=Object.keys(S.CH).map(k=>{const l=log.filter(x=>x.q[0]===k);if(!l.length)return"";const s=l.filter(x=>x.ok).length,p=Math.round(s/l.length*100);
