@@ -1,6 +1,6 @@
-// Quiz DCG v6 — réseau d'abord : toute mise à jour en ligne est prise immédiatement ; cache = secours hors connexion.
-const C="quiz-dcg-v7";
-const SHELL=["./","index.html","fiscal.html","societes.html","app.webmanifest","app-180.png","app-192.png","app-512.png","dubai.webp","desk_dubai.webp","banlieue.webp","desk_banlieue.webp","paris.webp","desk_paris.webp","newyork.webp","desk_newyork.webp","intro_poster.jpg","gerard.webp","manon.webp","yanis.webp","julie.webp","laurent.webp","nicolas.webp","philippe.webp","helene.webp","marc.webp","catherine.webp","kevin.webp","lucas.webp","sofia.webp","henri.webp","thomas.webp"];
+// Quiz DCG v8 — réseau d'abord : toute mise à jour en ligne est prise immédiatement ; cache = secours hors connexion.
+const C="quiz-dcg-v8";
+const SHELL=["./","index.html","fiscal.html","societes.html","app.webmanifest","app-180.png","app-192.png","app-512.png","dubai.webp","desk_dubai.webp","banlieue.webp","desk_banlieue.webp","paris.webp","desk_paris.webp","newyork.webp","desk_newyork.webp","intro_poster.jpg","mode_classic.webp","mode_survie.webp","mode_histoire.webp","gerard.webp","manon.webp","yanis.webp","julie.webp","laurent.webp","nicolas.webp","philippe.webp","helene.webp","marc.webp","catherine.webp","kevin.webp","lucas.webp","sofia.webp","henri.webp","thomas.webp"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(SHELL.map(u=>new Request(u,{cache:"reload"})))));self.skipWaiting()});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
 self.addEventListener("fetch",e=>{
